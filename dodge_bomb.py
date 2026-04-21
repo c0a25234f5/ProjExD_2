@@ -69,6 +69,17 @@ def main():
         return kk_dict
     kk_mv=get_kk_imgs() #辞書の取得
 
+    def calc_orientation(org: pg.Rect, dst: pg.Rect, current_xy: tuple[float,float]) ->tuple[float,float]: #追従型爆弾の関数定義
+        import math #sqrtの使用のため
+        btk = org-dst #差ベクトル
+        btk_nol = math.sqrt(btk[0]**2+btk[1]**2) #差ノルム
+        if btk_nol < 300: #差ノルムが300未満だった場合
+            return(current_xy)
+        else:
+            btk_xy = (btk[1]-btk[0])*(btk[0]+btk[1]) #差ノルム**2
+            btk *= math.sqrt(50/btk_xy) #正規化
+            return(btk)
+        
     clock = pg.time.Clock()
     vx=5 #爆弾の標準時のx軸移動
     vy=5 #爆弾の標準時のy軸移動
@@ -96,6 +107,8 @@ def main():
         bb_rct.width = bb_img.get_rect().width #爆弾のサイズ変更に合わせたsurfaceのwidthの変化
         bb_rct.height = bb_img.get_rect().height #爆弾のサイズ変更に合わせたsurfaceのheightの変化
         bb_rct.move_ip(avx,avy) #爆弾の移動
+
+        vx,vy=calc_orientation(bb_rct,kk_rct,current_xy=((bb_rct)-(kk_rct)))
 
         bb_chk=check_bound(bb_rct) #爆弾が画面外に出た場合
         if not bb_chk[0] or not bb_chk[1]:
