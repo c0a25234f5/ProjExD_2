@@ -42,6 +42,17 @@ def main():
         pg.display.update()
         pg.time.wait(5000) #5秒間表示
 
+    def init_bb_imgs() -> tuple[list[pg.Surface],list[int]]:
+        bb_imgs=[] #爆弾surfaceの初期リスト
+        for r in range(1,11):
+            bb_img = pg.Surface((20*r,20*r)) #爆弾surfaceの生成
+            pg.draw.circle(bb_img,(255,0,0),(10*r,10*r),10*r) #爆弾の作成
+            bb_img.set_colorkey((0,0,0)) #背景の透過
+            bb_imgs.append(bb_img) #爆弾をリストに追加
+            bb_acces = [a for  a in range(1,11)] #加速度のリスト
+        return (bb_imgs,bb_acces) #サイズ、加速度リストのタプル
+    bb_lst=init_bb_imgs() #爆弾のサイズ、加速度リストの呼び出し
+
     clock = pg.time.Clock()
     vx=5 #爆弾の標準時のx軸移動
     vy=5 #爆弾の標準時のy軸移動
@@ -63,12 +74,19 @@ def main():
                 sum_mv[0]+=DELTA[k][0]
                 sum_mv[1]+=DELTA[k][1]
 
+        avx = vx*(bb_lst[1][min(tmr//500, 9)]) #時間経過による爆弾のx軸の加速度上昇
+        avy = vy*(bb_lst[1][min(tmr//500, 9)]) #時間経過による爆弾のy軸の加速度上昇
+        bb_img = bb_lst[0][min(tmr//500,9)] #時間経過による爆弾サイズの変更
+        bb_rct.width = bb_img.get_rect().width #爆弾のサイズ変更に合わせたsurfaceのwidthの変化
+        bb_rct.height = bb_img.get_rect().height #爆弾のサイズ変更に合わせたsurfaceのheightの変化
+        bb_rct.move_ip(avx,avy) #爆弾の移動
+
         bb_chk=check_bound(bb_rct) #爆弾が画面外に出た場合
         if not bb_chk[0] or not bb_chk[1]:
              vx=-vx
         if not bb_chk[2] or not bb_chk[3]:
              vy=-vy
-        bb_rct.move_ip((vx,vy))
+        # bb_rct.move_ip((vx,vy))
 
         kk_chk=check_bound(kk_rct) #こうかとんが画面外に出た場合
         if not kk_chk[0] or not kk_chk[1]:
