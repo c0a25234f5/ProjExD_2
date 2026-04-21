@@ -63,7 +63,7 @@ def main():
         kk_rct.move_ip(sum_mv)
 
         if bb_rct.colliderect(kk_rct): #こうかとんと爆弾の衝突時
-            break
+            return
         screen.blit(kk_img, kk_rct)
         screen.blit(bb_img,bb_rct)
         pg.display.update()
