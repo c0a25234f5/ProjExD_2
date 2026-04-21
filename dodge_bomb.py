@@ -53,14 +53,16 @@ def main():
         return (bb_imgs,bb_acces) #サイズ、加速度リストのタプル
     bb_lst=init_bb_imgs() #爆弾のサイズ、加速度リストの呼び出し
 
+
     def get_kk_imgs() -> dict[tuple[int,int],pg.Surface]:
-        kk_img2=pg.transform.flip(kk_img,True,False)
-        kk_dict = {
-            """
+        """
             rotozoom(画像,回転角度,画像倍率)
             回転角度は反時計回り
 
-            """
+        """
+        kk_img2=pg.transform.flip(kk_img,True,False)
+        kk_dict = {
+            
             (0,0): pg.transform.rotozoom(kk_img,0,1.0), #入力無し
             (0,-5):pg.transform.rotozoom(kk_img2,90,1.0), #上
             (+5,-5):pg.transform.rotozoom(kk_img2,45,1.0), #右上
@@ -113,7 +115,7 @@ def main():
         bb_rct.height = bb_img.get_rect().height #爆弾のサイズ変更に合わせたsurfaceのheightの変化
         bb_rct.move_ip(avx,avy) #爆弾の移動
 
-        vx,vy=calc_orientation(bb_rct,kk_rct,current_xy=((bb_rct)-(kk_rct)))
+        # vx,vy=calc_orientation(bb_rct,kk_rct,current_xy=((bb_rct)-(kk_rct)))
 
         bb_chk=check_bound(bb_rct) #爆弾が画面外に出た場合
         if not bb_chk[0] or not bb_chk[1]:
