@@ -53,6 +53,22 @@ def main():
         return (bb_imgs,bb_acces) #サイズ、加速度リストのタプル
     bb_lst=init_bb_imgs() #爆弾のサイズ、加速度リストの呼び出し
 
+    def get_kk_imgs() -> dict[tuple[int,int],pg.Surface]:
+        kk_img2=pg.transform.flip(kk_img,True,False)
+        kk_dict = {
+            (0,0): pg.transform.rotozoom(kk_img,0,1.0), #入力無し
+            (0,-5):pg.transform.rotozoom(kk_img2,90,1.0), #上
+            (+5,-5):pg.transform.rotozoom(kk_img2,45,1.0), #右上
+            (+5,0):pg.transform.rotozoom(kk_img2,0,1.0), #右
+            (+5,+5):pg.transform.rotozoom(kk_img2,-45,1.0), #右下
+            (0,+5):pg.transform.rotozoom(kk_img2,-90,1.0), #下
+            (-5,+5):pg.transform.rotozoom(kk_img,45,1.0), #左下
+            (-5,0):pg.transform.rotozoom(kk_img,0,1.0), #左
+            (-5,-5):pg.transform.rotozoom(kk_img,-45,1.0) #左上
+        }
+        return kk_dict
+    kk_mv=get_kk_imgs() #辞書の取得
+
     clock = pg.time.Clock()
     vx=5 #爆弾の標準時のx軸移動
     vy=5 #爆弾の標準時のy軸移動
@@ -94,6 +110,7 @@ def main():
         if not kk_chk[2] or not kk_chk[3]:
             sum_mv[1]=-sum_mv[1]
         kk_rct.move_ip(sum_mv)
+        kk_img = kk_mv[tuple(sum_mv)] #こうかとんの移動量取得、向きの設定
 
         if bb_rct.colliderect(kk_rct): #こうかとんと爆弾の衝突時
             gameover(screen)
