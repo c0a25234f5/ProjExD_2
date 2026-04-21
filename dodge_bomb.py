@@ -9,7 +9,7 @@ os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
-    screen = pg.display.set_mode((1100, 650))
+    screen = pg.display.set_mode((WIDTH,HEIGHT))
     bg_img = pg.image.load("fig/pg_bg.jpg")    
     kk_img = pg.transform.rotozoom(pg.image.load("fig/3.png"), 0, 0.9)
     bb_img = pg.Surface((20,20))
@@ -21,7 +21,15 @@ def main():
     bb_rct = bb_img.get_rect()
     bb_rct.center = random.randint(0,1100),random.randint(0,650)
 
+    def check_bound(rect):
+            lf=0<rect.left
+            ri=rect.right<WIDTH
+            tp=0<rect.top
+            bt=rect.bottom<HEIGHT
+            return[lf,ri,tp,bt]
     clock = pg.time.Clock()
+    vx=5
+    vy=5
     tmr = 0
     while True:
         for event in pg.event.get():
@@ -36,15 +44,25 @@ def main():
         DELTA={pg.K_UP:[0,-5], pg.K_DOWN:[0,+5], pg.K_LEFT:[-5,0], pg.K_RIGHT:[+5,0]}
         sum_mv = [0, 0]
         for k in DELTA:
-            if key_lst[k] == True:
+            if key_lst[k]:
                 sum_mv[0]+=DELTA[k][0]
                 sum_mv[1]+=DELTA[k][1]
 
-        vx=+5
-        vy=+5
+        bb_chk=check_bound(bb_rct)
+        if not bb_chk[0] or not bb_chk[1]:
+             vx=-vx
+        if not bb_chk[2] or not bb_chk[3]:
+             vy=-vy
         bb_rct.move_ip((vx,vy))
 
         kk_rct.move_ip(sum_mv)
+        kk_chk=check_bound(kk_rct)
+        if not kk_chk[0] or not kk_chk[1]:
+            sum_mv[0]=-sum_mv[0]
+        if not kk_chk[2] or not kk_chk[3]:
+            sum_mv[1]=-sum_mv[1]
+        kk_rct.move_ip(sum_mv)
+
         screen.blit(kk_img, kk_rct)
         screen.blit(bb_img,bb_rct)
         pg.display.update()
