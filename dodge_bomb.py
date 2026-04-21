@@ -27,6 +27,21 @@ def main():
             tp=0<rect.top #上端
             bt=rect.bottom<HEIGHT #下端
             return[lf,ri,tp,bt]
+    
+    def gameover(screen: pg.surface) -> None: #ゲームオーバーの画面転換
+        go_bg_img = pg.Surface((WIDTH,HEIGHT)) #画面全体のsurface作成
+        pg.draw.rect(go_bg_img,((0,0,0)),pg.Rect(0,0,WIDTH,HEIGHT)) #画面全体の黒長方形
+        go_bg_img.set_alpha(200) #surfaceの透明度設定
+        go_font = pg.font.Font(None,80) #gameoverの文字のsurface生成
+        go_txt = go_font.render("Game Over",True,(255,255,255)) #文字surfaceに文字規定
+        go_bg_img.blit(go_txt,[(WIDTH/2)-135,(HEIGHT/2)]) #文字の出力
+        go_kk_img = pg.image.load("fig/8.png") #こうかとんのロード
+        go_bg_img.blit(go_kk_img,[(WIDTH/2)-190,(HEIGHT/2)]) #左こうかとんの出力
+        go_bg_img.blit(go_kk_img,[(WIDTH/2)+190,(HEIGHT/2)]) #右こうかとんの出力
+        screen.blit(go_bg_img,[0,0]) #gameover画面の出力
+        pg.display.update()
+        pg.time.wait(5000) #5秒間表示
+
     clock = pg.time.Clock()
     vx=5 #爆弾の標準時のx軸移動
     vy=5 #爆弾の標準時のy軸移動
@@ -63,6 +78,7 @@ def main():
         kk_rct.move_ip(sum_mv)
 
         if bb_rct.colliderect(kk_rct): #こうかとんと爆弾の衝突時
+            gameover(screen)
             return
         screen.blit(kk_img, kk_rct)
         screen.blit(bb_img,bb_rct)
