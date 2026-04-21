@@ -56,6 +56,11 @@ def main():
     def get_kk_imgs() -> dict[tuple[int,int],pg.Surface]:
         kk_img2=pg.transform.flip(kk_img,True,False)
         kk_dict = {
+            """
+            rotozoom(画像,回転角度,画像倍率)
+            回転角度は反時計回り
+
+            """
             (0,0): pg.transform.rotozoom(kk_img,0,1.0), #入力無し
             (0,-5):pg.transform.rotozoom(kk_img2,90,1.0), #上
             (+5,-5):pg.transform.rotozoom(kk_img2,45,1.0), #右上
